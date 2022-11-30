@@ -2,22 +2,24 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
 
 image = Image.open('CardiovascularSystem.jpeg')
 
 st.header("""
-PREDIKSI RISIKO KOMPLIKASI KARDIOVASKULER PADA PASIEN DIABETES
+APLIKASI PREDIKSI RISIKO KOMPLIKASI KARDIOVASKULER UNTUK PASIEN DIABETES
 """)
 st.image(image, caption='Cardiovascular System', width=650)
-st.sidebar.header('User Input Parameter')
+st.sidebar.header('Profil kesehatan Anda')
 
 def user_input_features():
-    age = st.sidebar.slider('Age', 0, 100, 25)
-    height = st.sidebar.slider('Height', 80, 200, 160)
-    weight = st.sidebar.slider('Weight', 10, 200, 80)
-    ap_hi = st.sidebar.slider('Systolic blood pressure', 10, 140, 114)
-    ap_lo = st.sidebar.slider('Diastolic blood pressure', 0, 90, 70)
-    cholesterol = st.sidebar.selectbox('Cholesterol',('normal','above normal','well above normal'))
+    age = st.sidebar.slider('Umur (tahun)', 18, 80, 18)
+    height = st.sidebar.number_input('Tinggi Badan (cm)', min_value=0.1)
+    weight = st.sidebar.number_input('Berat Badan (kg)', min_value=0.1)
+    ap_hi = st.sidebar.slider('Tekanan darah sistolik (mmHg)', 0, 240, 0)
+    ap_lo = st.sidebar.slider('Tekanan darah diastolic (mmHg)', 0, 140, 0)
+    cholesterol = st.sidebar.number_input('Kolesterol', step=1)
     data = {'Age': age,
             'Height': height,
             'Weight': weight,
@@ -30,9 +32,14 @@ def user_input_features():
 
 df = user_input_features()
 
-st.subheader('User Input parameters')
-st.write(df)
-
+st.subheader('Profil kesehatan Anda')
+#st.write(df)
+st.write('**Umur:** ', df['Age'][0], ' tahun')
+st.write('**Tinggi Badan:** ',df['Height'][0], ' cm')
+st.write('**Berat Badan:** ',df['Weight'][0], ' kg')
+st.write('**Tekanan darah sistolik:** ',df['Systolic blood pressure'][0], ' mmHg')
+st.write('**Tekanan darah diastolic:** ',df['Diastolic blood pressure'][0], ' mmHg')
+st.write('**Kolesterol**: ',df['Cholesterol'][0],)
 #Preprocess
 #Create BMI Feature
 def calc_bmi(weight, height):
@@ -70,7 +77,16 @@ df2['ht_stage'] = df2.apply(lambda x: get_ht_stage(x['Systolic blood pressure'],
 
 #Encode
 dict_cholesterol = {"normal": 1, "above normal": 2, "well above normal":3}
-df2['Cholesterol'] = df2['Cholesterol'].apply(lambda x: dict_cholesterol[x])
+
+def get_cholasterol_level(chol: int) -> int:
+  if chol < 200:
+    return dict_cholesterol['normal']
+  elif (chol >= 200 and chol < 240):
+    return dict_cholesterol['above normal']
+  elif chol >= 240:
+    return dict_cholesterol['well above normal']
+
+df2['Cholesterol'] = df2.apply(lambda x: get_cholasterol_level(x['Cholesterol']), axis=1)
 
 #rename
 df2 = df2.rename(columns={"Systolic blood pressure": "ap_hi", "Diastolic blood pressure": "ap_lo", "Age":"age", 
@@ -99,7 +115,6 @@ else: prediction = 'bukan cardio'
 
 #Predict Result
 st.subheader('Prediction')
-st.text("Emosi:")
 if round(prediction_proba[0,1], 5)> round(prediction_proba[0,0], 5):
   st.write("**Probability terkena penyakit Cardiovascular:** ", round(prediction_proba[0,1]*100, 5), "%")
   st.write("Probability Sehat: ",  round(prediction_proba[0,0]*100, 3), "%")
