@@ -182,6 +182,7 @@ hide_menu = """
       content:'Copyright © 2022 Fahmi Sajid (23522028) dan Arief Purnama Muharram (23521013), STEI ITB';
       display:block;
       position:relative;
+      color:black;
       padding:5px;
       top:3px;
     }
