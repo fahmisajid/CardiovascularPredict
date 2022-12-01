@@ -6,6 +6,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 image = Image.open('CardiovascularSystem.jpeg')
+favicon = Image.open('favicon.png')
+st.set_page_config(page_title="Aplikasi Prediksi Risiko Komplikasi Kardiovaskuler untuk Pasien Diabetes", page_icon=favicon)
 
 st.header("""
 APLIKASI PREDIKSI RISIKO KOMPLIKASI KARDIOVASKULER UNTUK PASIEN DIABETES
@@ -14,12 +16,12 @@ st.image(image, caption='Cardiovascular System', width=650)
 st.sidebar.header('Profil kesehatan Anda')
 
 def user_input_features():
-    age = st.sidebar.slider('Umur (tahun)', 18, 80, 18)
-    height = st.sidebar.number_input('Tinggi Badan (cm)', min_value=0.1)
-    weight = st.sidebar.number_input('Berat Badan (kg)', min_value=0.1)
-    ap_hi = st.sidebar.slider('Tekanan darah sistolik (mmHg)', 0, 240, 0)
-    ap_lo = st.sidebar.slider('Tekanan darah diastolic (mmHg)', 0, 140, 0)
-    cholesterol = st.sidebar.number_input('Kolesterol', step=1)
+    age = st.sidebar.slider('Umur (tahun)', 18, 80, 25)
+    height = st.sidebar.number_input('Tinggi Badan (cm)', min_value=180.0)
+    weight = st.sidebar.number_input('Berat Badan (kg)', min_value=74.0)
+    ap_hi = st.sidebar.slider('Tekanan darah sistolik (mmHg)', 0, 240, 140)
+    ap_lo = st.sidebar.slider('Tekanan darah diastolic (mmHg)', 0, 140, 80)
+    cholesterol = st.sidebar.number_input('Kolesterol (mg/dL)', min_value=120.0)
     data = {'Age': age,
             'Height': height,
             'Weight': weight,
@@ -31,6 +33,14 @@ def user_input_features():
     return features
 
 df = user_input_features()
+st.subheader('Deskripsi')
+st.markdown("""
+Aplikasi prediksi risiko komplikasi kardiovaskuler untuk pasien diabetes merupakan aplikasi yang digunakan untuk memprediksi 
+risiko komplikasi kardiovaskuler pada pasien dengan riwayat diabetes melitus tipe-2 (DMT2). 
+\nAplikasi ini dikembangkan dengan pendekatan berbasis artificial intelligence (AI). 
+\nAplikasi ini mampu memprediksi risko komplikasi kardiovaskuler dengan akurasi mencapai 71%, recall 69%, 
+dan presisi 70%. 
+\nHasil penelitian pengembangan aplikasi tersebut dapat dilihat pada link berikut. [https://docs.google.com/document/d/1weWAHR_an6XnVmIxkZXP2MJyso4JFOfpGlTuE0rhV0A/edit?usp=sharing](https://docs.google.com/document/d/1weWAHR_an6XnVmIxkZXP2MJyso4JFOfpGlTuE0rhV0A/edit?usp=sharing)""")
 
 st.subheader('Profil kesehatan Anda')
 #st.write(df)
@@ -39,7 +49,7 @@ st.write('**Tinggi Badan:** ',df['Height'][0], ' cm')
 st.write('**Berat Badan:** ',df['Weight'][0], ' kg')
 st.write('**Tekanan darah sistolik:** ',df['Systolic blood pressure'][0], ' mmHg')
 st.write('**Tekanan darah diastolic:** ',df['Diastolic blood pressure'][0], ' mmHg')
-st.write('**Kolesterol**: ',df['Cholesterol'][0],)
+st.write('**Kolesterol**: ',df['Cholesterol'][0], ' mg/dL')
 #Preprocess
 #Create BMI Feature
 def calc_bmi(weight, height):
@@ -114,11 +124,68 @@ if prediction == 1:
 else: prediction = 'bukan cardio'
 
 #Predict Result
-st.subheader('Prediction')
+success_message = """<p style="font-family:sans-serif; color:Green;">Berdasarkan hasil analisis terhadap profil kesehatan Anda saat ini, 
+peluang Anda untuk terbebas dari komplikasi kardiovaskuler lebih tinggi. Walaupun demikian, Anda tetap perlu menjaga kondisi kesehatan 
+Anda agar Anda terbebas dari berbagai risiko komplikasi penyakit. Berikut merupakan beberapa tips hidup sehat yang dapat Anda lakukan.</p>"""
+danger_message = """<p style="font-family:sans-serif; color:Red;">Berdasarkan hasil analisis terhadap profil kesehatan Anda saat ini, 
+peluang Anda untuk mendapatkan komplikasi kardiovaskuler di kemudian hari lebih tinggi. 
+Segera konsultasikan dengan dokter Anda untuk mendapatkan informasi lebih lanjut. </p>
+"""
+st.subheader('Hasil Prediksi')
 if round(prediction_proba[0,1], 5)> round(prediction_proba[0,0], 5):
-  st.write("**Probability terkena penyakit Cardiovascular:** ", round(prediction_proba[0,1]*100, 5), "%")
-  st.write("Probability Sehat: ",  round(prediction_proba[0,0]*100, 3), "%")
+  st.write("**Peluang mengalami komplikasi kardiovaskuler:** ", round(prediction_proba[0,1]*100, 2), "%")
+  st.write("Peluang terbebas dari komplikasi kardiovaskuler: ",  round(prediction_proba[0,0]*100, 2), "%")
+  st.markdown(danger_message, unsafe_allow_html=True)
+  st.markdown(
+  """
+  - Diet sehat
+    - Pilih makanan berserat tinggi (buah-buahan / sayur-sayuran)
+    - Kurang konsumsi gula dan karbohidrat sederhana
+    - Batasi konsumsi garam-garaman
+    - Kurangi konsumsi makanan berlemak
+    - Tidak mengonsumsi alkohol
+  - Olahraga dan selalu aktif
+  - Kelola stress
+  - Perika gula darah secara rutin
+  - Konsumsi obat-obatan secara rutin sesuai dengan anjuran dokter
+
+  """
+  )
+  st.markdown("""Ingat! Hidup sehat Anda adalah hidup sehat diri sendiri dan keluarga. 
+  Segera kunjungi dokter Anda untuk mendapatkan pemeriksaan kesehatan lebih lanjut.
+  \n#SalamSehat #SehatItuIndah #HidupSehatDenganDiabetes""")
 elif round(prediction_proba[0,1], 5)*100 < round(prediction_proba[0,0], 5)*100:
-  st.write("**Probability Sehat:** ",  round(prediction_proba[0,0]*100, 5), "%")
-  st.write("Probability terkena penyakit Cardiovascular: ", round(prediction_proba[0,1]*100, 5), "%")
+  st.write("**Peluang terbebas dari komplikasi kardiovaskuler:** ",  round(prediction_proba[0,0]*100, 2), "%")
+  st.write("Peluang mengalami komplikasi kardiovaskuler: ", round(prediction_proba[0,1]*100, 2), "%")
+  st.markdown(success_message, unsafe_allow_html=True)
+  st.markdown(
+  """
+  - Diet sehat
+    - Pilih makanan berserat tinggi (buah-buahan / sayur-sayuran)
+    - Kurang konsumsi gula dan karbohidrat sederhana
+    - Batasi konsumsi garam-garaman
+    - Kurangi konsumsi makanan berlemak
+    - Tidak mengonsumsi alkohol
+  - Olahraga dan selalu aktif
+  - Kelola stress
+  - Perika gula darah secara rutin
+  - Konsumsi obat-obatan secara rutin sesuai dengan anjuran dokter
+
+  """
+  )
   
+hide_menu = """
+  <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: visible;}
+    footer:after{
+      content:'Copyright © 2022 Fahmi Sajid (23522028) dan Arief Purnama Muharram (23521013), STEI ITB';
+      display:block;
+      position:relative;
+      padding:5px;
+      top:3px;
+    }
+  </style>
+"""
+
+st.markdown(hide_menu, unsafe_allow_html=True)
