@@ -45,7 +45,7 @@ st.subheader('Deskripsi')
 st.markdown("""
 Aplikasi prediksi risiko komplikasi kardiovaskuler untuk pasien diabetes merupakan aplikasi yang digunakan untuk memprediksi 
 risiko komplikasi kardiovaskuler pada pasien dengan riwayat diabetes melitus tipe-2 (DMT2). 
-\nAplikasi ini dikembangkan dengan pendekatan berbasis artificial intelligence (AI). Aplikasi ini mampu memprediksi risko komplikasi kardiovaskuler dengan **akurasi 71%**, **__recall__ 69%**, 
+\nAplikasi ini dikembangkan dengan pendekatan berbasis artificial intelligence (AI). Aplikasi ini mampu memprediksi risko komplikasi kardiovaskuler dengan **akurasi 71%**, **_recall_ 69%**, 
 dan **presisi 70%**. Hasil penelitian pengembangan aplikasi tersebut dapat dilihat pada link [berikut](https://docs.google.com/document/d/1weWAHR_an6XnVmIxkZXP2MJyso4JFOfpGlTuE0rhV0A/edit?usp=sharing).""")
 
 # User's profile
