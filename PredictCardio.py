@@ -173,7 +173,7 @@ elif round(prediction_proba[0,1], 5)*100 < round(prediction_proba[0,0], 5)*100:
   
 hide_menu = """
   <style>
-    #MainMenu {visibility: hidden;}
+    #MainMenu {visibility: visible;}
     footer {visibility: visible;}
     footer:after{
       content:'Copyright © 2022 Fahmi Sajid (23522028) dan Arief Purnama Muharram (23521013), STEI ITB';
