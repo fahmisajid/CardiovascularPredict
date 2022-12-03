@@ -45,17 +45,17 @@ st.subheader('Deskripsi')
 st.markdown("""
 Aplikasi prediksi risiko komplikasi kardiovaskuler untuk pasien diabetes merupakan aplikasi yang digunakan untuk memprediksi 
 risiko komplikasi kardiovaskuler pada pasien dengan riwayat diabetes melitus tipe-2 (DMT2). 
-\nAplikasi ini dikembangkan dengan pendekatan berbasis artificial intelligence (AI). Aplikasi ini mampu memprediksi risko komplikasi kardiovaskuler dengan akurasi mencapai 71%, recall 69%, 
-dan presisi 70%. Hasil penelitian pengembangan aplikasi tersebut dapat dilihat pada link [berikut](https://docs.google.com/document/d/1weWAHR_an6XnVmIxkZXP2MJyso4JFOfpGlTuE0rhV0A/edit?usp=sharing).""")
+\nAplikasi ini dikembangkan dengan pendekatan berbasis artificial intelligence (AI). Aplikasi ini mampu memprediksi risko komplikasi kardiovaskuler dengan **akurasi 71%**, **__recall__ 69%**, 
+dan **presisi 70%**. Hasil penelitian pengembangan aplikasi tersebut dapat dilihat pada link [berikut](https://docs.google.com/document/d/1weWAHR_an6XnVmIxkZXP2MJyso4JFOfpGlTuE0rhV0A/edit?usp=sharing).""")
 
 # User's profile
 st.subheader('Profil kesehatan Anda')
 st.write('**Umur:** ', df['Age'][0], ' tahun')
-st.write('**Tinggi badan:** ',df['Height'][0], ' cm')
-st.write('**Berat badan:** ',df['Weight'][0], ' kg')
+st.write('**Tinggi badan:** ',round(df['Height'][0],2), ' cm')
+st.write('**Berat badan:** ',round(df['Weight'][0],2), ' kg')
 st.write('**Tekanan darah sistolik:** ',df['Systolic blood pressure'][0], ' mmHg')
 st.write('**Tekanan darah diastolik:** ',df['Diastolic blood pressure'][0], ' mmHg')
-st.write('**Kolesterol**: ',df['Cholesterol'][0], ' mg/dL')
+st.write('**Kolesterol**: ',round(df['Cholesterol'][0],2), ' mg/dL')
 
 # Preprocessing
 # Create BMI Feature
@@ -122,16 +122,16 @@ else: prediction = 'bukan cardio'
 
 #Predict Result
 success_message = """<p style="font-family:sans-serif; color:Green;">Berdasarkan hasil analisis terhadap profil kesehatan Anda saat ini, 
-peluang Anda untuk terbebas dari komplikasi kardiovaskuler lebih tinggi. Walaupun demikian, Anda tetap perlu menjaga kondisi kesehatan 
+Anda memiliki risiko yang lebih rendah untuk mengalami risiko komplikasi kardiovaskuler di kemudian hari. Walaupun demikian, Anda tetap perlu menjaga kondisi kesehatan 
 Anda agar Anda terbebas dari berbagai risiko komplikasi penyakit. Berikut merupakan beberapa tips hidup sehat yang dapat Anda lakukan.</p>"""
 danger_message = """<p style="font-family:sans-serif; color:Red;">Berdasarkan hasil analisis terhadap profil kesehatan Anda saat ini, 
-peluang Anda untuk mendapatkan komplikasi kardiovaskuler di kemudian hari lebih tinggi. 
-Segera konsultasikan dengan dokter Anda untuk mendapatkan informasi lebih lanjut. </p>
+risiko Anda untuk mengalami komplikasi kardiovaskuler di kemudian hari lebih tinggi. 
+Segera konsultasikan dengan dokter Anda untuk mendapatkan informasi lebih lanjut. Berikut merupakan beberapa tips hidup sehat yang dapat Anda lakukan.</p>
 """
 st.subheader('Hasil Prediksi')
 if round(prediction_proba[0,1], 5)> round(prediction_proba[0,0], 5):
-  st.write("**Peluang mengalami komplikasi kardiovaskuler:** ", round(prediction_proba[0,1]*100, 2), "%")
-  st.write("Peluang terbebas dari komplikasi kardiovaskuler: ",  round(prediction_proba[0,0]*100, 2), "%")
+  st.write("**Risiko tinggi mengalami komplikasi kardiovaskuler:** ", round(prediction_proba[0,1]*100, 2), "%")
+  st.write("Risiko rendah mengalami komplikasi kardiovaskuler: ",  round(prediction_proba[0,0]*100, 2), "%")
   st.markdown(danger_message, unsafe_allow_html=True)
   st.markdown(
   """
@@ -152,8 +152,8 @@ if round(prediction_proba[0,1], 5)> round(prediction_proba[0,0], 5):
   Segera kunjungi dokter Anda untuk mendapatkan pemeriksaan kesehatan lebih lanjut.
   \n#SalamSehat #SehatItuIndah #HidupSehatDenganDiabetes""")
 elif round(prediction_proba[0,1], 5)*100 < round(prediction_proba[0,0], 5)*100:
-  st.write("**Peluang terbebas dari komplikasi kardiovaskuler:** ",  round(prediction_proba[0,0]*100, 2), "%")
-  st.write("Peluang mengalami komplikasi kardiovaskuler: ", round(prediction_proba[0,1]*100, 2), "%")
+  st.write("**Risiko rendah mengalami komplikasi kardiovaskuler:** ",  round(prediction_proba[0,0]*100, 2), "%")
+  st.write("Risiko tinggi mengalami komplikasi kardiovaskuler: ", round(prediction_proba[0,1]*100, 2), "%")
   st.markdown(success_message, unsafe_allow_html=True)
   st.markdown(
   """
@@ -179,7 +179,6 @@ hide_menu = """
       content:'Copyright © 2022 Fahmi Sajid (23522028) dan Arief Purnama Muharram (23521013), STEI ITB';
       display:block;
       position:relative;
-      color:black;
       padding:5px;
       top:3px;
     }
